@@ -1,6 +1,6 @@
 #!ruby 
 #
-# Erex Yomi will e-mail a featured article to a specified set of e-mail addresses
+# Erex Yomi e-mails a featured article to a mailing list
 # 
 # Author: Asaf Bartov
 # Source: https://github.com/abartov/erex_yomi
@@ -17,6 +17,7 @@ HTML_PROLOGUE = "<html lang=\"he\" dir=\"rtl\"><head><meta charset=\"UTF-8\" /><
 HTML_EPILOGUE = "</body></html>"
 HEBMONTHS = [nil, 'בינואר', 'בפברואר', 'במארס', 'באפריל', 'במאי', 'ביוני', 'ביולי', 'באוגוסט', 'בספטמבר', 'באוקטובר', 'בנובמבר', 'בדצמבר']
 
+REXML::Document.entity_expansion_text_limit = 200000
 
 class Mailer < ActionMailer::Base
   def daily_email(body)
@@ -35,9 +36,17 @@ def prepare_article_part(mw)
   m = /לערך המלא/.match h
   s = m.pre_match[m.pre_match.rindex('href="/wiki/')+12..-1]
   article_title = URI.unescape(s[0..s.index('"')-1])
+  print "Title: #{article_title}"
   h = mw.render(article_title)
   # grab everything before the TOC
+  File.open('DEBUG.txt', 'w') {|f| f.write(h) }
   m = /(<p>.*<\/p>).*<table id=\"toc\" class=\"toc\">/m.match(h)
+  if m.nil?
+    m = /(<p>.*<\/p>).*<div id=\"toc\" class=\"toc\">/m.match(h)
+  end
+  if m.nil?
+    die "ERROR finding intro part!  Aborting..."
+  end
   return '<h1>ערך מומלץ: '+article_title+'</h1>'+fixlinks(m[1])
 end
 
