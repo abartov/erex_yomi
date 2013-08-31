@@ -39,7 +39,6 @@ def prepare_article_part(mw)
   print "Title: #{article_title}"
   h = mw.render(article_title)
   # grab everything before the TOC
-  File.open('DEBUG.txt', 'w') {|f| f.write(h) }
   m = /(<p>.*<\/p>).*<table id=\"toc\" class=\"toc\">/m.match(h)
   if m.nil?
     m = /(<p>.*<\/p>).*<div id=\"toc\" class=\"toc\">/m.match(h)
