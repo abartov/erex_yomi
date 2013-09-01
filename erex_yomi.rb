@@ -6,6 +6,8 @@
 # Source: https://github.com/abartov/erex_yomi
 # 
 # This code is in the public domain.  Where not allowed, it is released under the Creative Commons Zero License (CC0).
+#
+# you will need to install the 'mediawiki-gateway' and 'actionmailer' gems.
 
 require "rubygems"
 require 'date'
@@ -16,6 +18,11 @@ require 'action_mailer'
 HTML_PROLOGUE = "<html lang=\"he\" dir=\"rtl\"><head><meta charset=\"UTF-8\" /><body dir=\"rtl\" align=\"right\">"
 HTML_EPILOGUE = "</body></html>"
 HEBMONTHS = [nil, 'בינואר', 'בפברואר', 'במארס', 'באפריל', 'במאי', 'ביוני', 'ביולי', 'באוגוסט', 'בספטמבר', 'באוקטובר', 'בנובמבר', 'בדצמבר']
+
+ABOUT_TEXT = <<endtext
+<p>ויקיפדיה נכתבת ומתוחזקת על-ידי מתנדבים: כל הערכים והתמונות, כל ההגהות והבדיקות, הכל נעשה על טהרת ההתנדבות. אנו מזמינים אותך <a href="https://he.wikipedia.org/wiki/%D7%95%D7%99%D7%A7%D7%99%D7%A4%D7%93%D7%99%D7%94:%D7%91%D7%A8%D7%95%D7%9B%D7%99%D7%9D_%D7%94%D7%91%D7%90%D7%99%D7%9D">להצטרף אלינו</a>! גם אם אין לך ענין בכתיבת ערכים מן היסוד, יש שלל דרכים לסייע בויקיפדיה, כגון הגהה, מיון לקטגוריות, שיוך תמונות לערכים, יצירת איורים, ועוד.</p>
+<p>ערכים מומלצים הם ערכים שעומדים בקריטריוני האיכות הנוכחיים של ויקיפדיה. מתנדבי ויקיפדיה מתכבדים להגיש לך ערך מומלץ, תמונה מומלצת, ומקבץ אירועים מן הלוח הלועזי והעברי שאירעו בתאריך זה:</p><br/>
+endtext
 
 REXML::Document.entity_expansion_text_limit = 200000
 
@@ -38,7 +45,7 @@ def prepare_article_part(mw)
   raw_name = s[0..s.index('"')-1]
   article_link = "https://he.wikipedia.org/wiki/#{raw_name}"
   article_title = URI.unescape(raw_name).gsub('_', ' ')
-  print "Title: #{article_title}"
+  print "- Title: #{article_title} - "
   h = mw.render(article_title)
   # grab everything before the TOC
   m = /(<p>.*<\/p>).*<table id=\"toc\" class=\"toc\">/m.match(h)
@@ -75,7 +82,7 @@ end
 # main
 puts "Hi!"
 mw = MediaWiki::Gateway.new('http://he.wikipedia.org/w/api.php')
-body = HTML_PROLOGUE
+body = HTML_PROLOGUE + ABOUT_TEXT
 print "Preparing featured article... "
 body += prepare_article_part(mw)
 print "done!\nPreparing Today in History... "
