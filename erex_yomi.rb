@@ -76,16 +76,22 @@ end
 puts "Hi!"
 mw = MediaWiki::Gateway.new('http://he.wikipedia.org/w/api.php')
 body = HTML_PROLOGUE
+print "Preparing featured article... "
 body += prepare_article_part(mw)
+print "done!\nPreparing Today in History... "
 body += prepare_today_in_history(mw)
+print "done!\nPreparing Today in Hebrew Calendar... "
 body += prepare_today_in_hebcal(mw)
+print "done!\nPreparing Recommended Picture... "
 body += prepare_daily_picture(mw)
+print "done!\nSending... "
 
 Mailer.delivery_method = :sendmail
 Mailer.sendmail_settings = {:arguments => "-i" }
 Mailer.logger = Logger.new(STDOUT)
 themail = Mailer.daily_email(body)
 themail.deliver
+puts "done!"
 File.open('last_sent.html', 'w') {|f| f.write(body)}
 
 puts "Bye!"
