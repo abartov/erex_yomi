@@ -39,7 +39,9 @@ def fixlinks(str)
 end
 
 def prepare_article_part(mw)
-  h = mw.render('תבנית:הערך המומלץ')
+# this one is useful if a single fixed-name template renders the daily recommended article correctly.  This doesn't seem to work well with the API; for some reason, I'm getting the same recommended article every time.
+#  h = mw.render('תבנית:הערך המומלץ')  
+  h = mw.render('תבנית:ערך מומלץ '+heb_date)
   m = /לערך המלא/.match h
   s = m.pre_match[m.pre_match.rindex('href="/wiki/')+12..-1]
   raw_name = s[0..s.index('"')-1]
