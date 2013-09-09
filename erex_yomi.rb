@@ -21,6 +21,7 @@ HEBMONTHS = [nil, 'בינואר', 'בפברואר', 'במארס', 'באפריל'
 
 ABOUT_TEXT = <<endtext
 <p>ויקיפדיה נכתבת ומתוחזקת על-ידי מתנדבים: כל הערכים והתמונות, כל ההגהות והבדיקות, הכל נעשה על טהרת ההתנדבות. אנו מזמינים אותך <a href="https://he.wikipedia.org/wiki/%D7%95%D7%99%D7%A7%D7%99%D7%A4%D7%93%D7%99%D7%94:%D7%91%D7%A8%D7%95%D7%9B%D7%99%D7%9D_%D7%94%D7%91%D7%90%D7%99%D7%9D">להצטרף אלינו</a>! גם אם אין לך ענין בכתיבת ערכים מן היסוד, יש שלל דרכים לסייע בויקיפדיה, כגון הגהה, מיון לקטגוריות, שיוך תמונות לערכים, יצירת איורים, ועוד.</p>
+<p>עמותת <a href="http://wikimedia.org.il/"><b>ויקימדיה ישראל</b></a> היא עמותה (מס' עמותה 580476430) הפועלת בשיתוף פעולה עם קרן ויקימדיה הבינלאומית לקידום הידע וההשכלה בישראל באמצעות איסופם, יצירתם והפצתם של תכנים חופשיים ובאמצעות ייזום פרויקטים להקלת הגישה למאגרי ידע.</p>
 <p>ערכים מומלצים הם ערכים שעומדים בקריטריוני האיכות הנוכחיים של ויקיפדיה. מתנדבי ויקיפדיה מתכבדים להגיש לך ערך מומלץ, תמונה מומלצת, ומקבץ אירועים מן הלוח הלועזי והעברי שאירעו בתאריך זה:</p><br/>
 endtext
 
@@ -28,7 +29,7 @@ REXML::Document.entity_expansion_text_limit = 200000
 
 class Mailer < ActionMailer::Base
   def daily_email(body)
-    mail( :to => "daily-article-he@lists.wikimedia.org", :from => "abartov@wikimedia.org", :subject => " תוכן מומלץ יומי מויקיפדיה - "+heb_date) do |format|
+    mail( :to => "daily-article-he@lists.wikimedia.org", :from => "dailyarticle@wikimedia.org.il", :subject => " תוכן מומלץ יומי מויקיפדיה - "+heb_date) do |format|
       format.html { render text: body }
     end
   end
