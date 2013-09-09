@@ -102,7 +102,7 @@ Mailer.logger = Logger.new(STDOUT)
 themail = Mailer.daily_email(body)
 themail.deliver
 puts "done!"
-File.open('last_sent.html', 'w') {|f| f.write(body)}
+File.open('erex_yomi/last_sent.html', 'w') {|f| f.write(body)}
 
 puts "Bye!"
 
