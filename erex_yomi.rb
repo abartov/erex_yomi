@@ -62,7 +62,7 @@ def prepare_article_part(mw)
 end
 
 def prepare_today_in_history(mw)
-  h = mw.render('תבנית:היום בהיסטוריה')
+  h = mw.render('תבנית:היום בהיסטוריה '+heb_date)
   m = /<ul>.*<\/ul>/m.match(h)
   return '<h1>היום בהיסטוריה</h1>'+fixlinks(m.to_s)
 end
