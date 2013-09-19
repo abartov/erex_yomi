@@ -62,7 +62,7 @@ def prepare_article_part(mw)
 end
 
 def prepare_today_in_history(mw)
-  h = mw.render('תבנית:היום בהיסטוריה '+heb_date)
+  h = mw.render('תבנית:היום בהיסטוריה '+heb_date(false))
   m = /<ul>.*<\/ul>/m.match(h)
   return '<h1>היום בהיסטוריה</h1>'+fixlinks(m.to_s)
 end
@@ -71,9 +71,9 @@ def prepare_today_in_hebcal(mw)
   m = /<ul>.*<\/ul>/m.match(h)
   return '<h1>אירועים בלוח העברי</h1>'+fixlinks(m.to_s)
 end
-def heb_date
+def heb_date(with_year = true)
   d = Date.today
-  return "#{d.day} #{HEBMONTHS[d.month]} #{d.year}" 
+  return "#{d.day} #{HEBMONTHS[d.month]}" + (with_year ? " #{d.year}" : '')
 end
 
 def prepare_daily_picture(mw)
