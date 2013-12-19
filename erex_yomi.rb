@@ -20,9 +20,11 @@ HTML_EPILOGUE = "</body></html>"
 HEBMONTHS = [nil, 'בינואר', 'בפברואר', 'במארס', 'באפריל', 'במאי', 'ביוני', 'ביולי', 'באוגוסט', 'בספטמבר', 'באוקטובר', 'בנובמבר', 'בדצמבר']
 
 ABOUT_TEXT = <<endtext
-<p>ויקיפדיה נכתבת ומתוחזקת על-ידי מתנדבים: כל הערכים והתמונות, כל ההגהות והבדיקות, הכל נעשה על טהרת ההתנדבות. אנו מזמינים אותך <a href="https://he.wikipedia.org/wiki/%D7%95%D7%99%D7%A7%D7%99%D7%A4%D7%93%D7%99%D7%94:%D7%91%D7%A8%D7%95%D7%9B%D7%99%D7%9D_%D7%94%D7%91%D7%90%D7%99%D7%9D">להצטרף אלינו</a>! גם אם אין לך ענין בכתיבת ערכים מן היסוד, יש שלל דרכים לסייע בויקיפדיה, כגון הגהה, מיון לקטגוריות, שיוך תמונות לערכים, יצירת איורים, ועוד.</p>
+<p>מתנדבי ויקיפדיה מתכבדים להגיש לך ערך מומלץ, תמונה מומלצת, ומקבץ אירועים מן הלוח הלועזי והעברי שאירעו בתאריך זה. אנו מזמינים אותך <a href="https://he.wikipedia.org/wiki/%D7%95%D7%99%D7%A7%D7%99%D7%A4%D7%93%D7%99%D7%94:%D7%91%D7%A8%D7%95%D7%9B%D7%99%D7%9D_%D7%94%D7%91%D7%90%D7%99%D7%9D">להצטרף אלינו</a>! ולסייע בויקיפדיה, כגון הגהה, מיון לקטגוריות, שיוך תמונות לערכים, יצירת איורים, ועוד.</p><br/>
+endtext
+
+FOOTER_ABOUT = <<endtext
 <p>עמותת <a href="http://wikimedia.org.il/"><b>ויקימדיה ישראל</b></a> היא עמותה (מס' עמותה 580476430) הפועלת בשיתוף פעולה עם קרן ויקימדיה הבינלאומית לקידום הידע וההשכלה בישראל באמצעות איסופם, יצירתם והפצתם של תכנים חופשיים ובאמצעות ייזום פרויקטים להקלת הגישה למאגרי ידע.</p>
-<p>ערכים מומלצים הם ערכים שעומדים בקריטריוני האיכות הנוכחיים של ויקיפדיה. מתנדבי ויקיפדיה מתכבדים להגיש לך ערך מומלץ, תמונה מומלצת, ומקבץ אירועים מן הלוח הלועזי והעברי שאירעו בתאריך זה:</p><br/>
 endtext
 
 REXML::Document.entity_expansion_text_limit = 200000
@@ -41,7 +43,6 @@ end
 
 def prepare_article_part(mw)
 # this one is useful if a single fixed-name template renders the daily recommended article correctly.  This doesn't seem to work well with the API; for some reason, I'm getting the same recommended article every time.
-#  h = mw.render('תבנית:הערך המומלץ')  
   h = mw.render('תבנית:ערך מומלץ '+heb_date)
   m = /לערך המלא/.match h
   s = m.pre_match[m.pre_match.rindex('href="/wiki/')+12..-1]
@@ -94,6 +95,7 @@ print "done!\nPreparing Today in Hebrew Calendar... "
 body += prepare_today_in_hebcal(mw)
 print "done!\nPreparing Recommended Picture... "
 body += prepare_daily_picture(mw)
+body += ABOUT_FOOTER + HTML_EPILOGUE
 print "done!\nSending... "
 
 Mailer.delivery_method = :sendmail
