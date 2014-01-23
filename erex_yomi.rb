@@ -59,18 +59,18 @@ def prepare_article_part(mw)
   if m.nil?
     die "ERROR finding intro part!  Aborting..."
   end
-  return '<h1>ערך מומלץ: '+'<a href="'+article_link+'">'+article_title+'</a></h1>'+fixlinks(m[1])
+  return '<div dir="rtl" align="right"><h1>ערך מומלץ: '+'<a href="'+article_link+'">'+article_title+'</a></h1>'+fixlinks(m[1])+'</div>'
 end
 
 def prepare_today_in_history(mw)
   h = mw.render('תבנית:היום בהיסטוריה '+heb_date(false))
   m = /<ul>.*<\/ul>/m.match(h)
-  return '<h1>היום בהיסטוריה</h1>'+fixlinks(m.to_s)
+  return '<div dir="rtl" align="right"><h1>היום בהיסטוריה</h1>'+fixlinks(m.to_s)+'</div>'
 end
 def prepare_today_in_hebcal(mw)
   h = mw.render('תבנית:אירועים בלוח העברי')
   m = /<ul>.*<\/ul>/m.match(h)
-  return '<h1>אירועים בלוח העברי</h1>'+fixlinks(m.to_s)
+  return '<div dir="rtl" align="right"><h1>אירועים בלוח העברי</h1>'+fixlinks(m.to_s)+'</div>'
 end
 def heb_date(with_year = true)
   d = Date.today
@@ -80,7 +80,7 @@ end
 def prepare_daily_picture(mw)
   h = mw.render('תבנית:תמונה מומלצת '+heb_date)
   m = /<\/table>\s*(<p>.*<\/p>)/m.match h
-  return '<h1>תמונה מומלצת</h1>'+fixlinks(m[1].to_s)
+  return '<div dir="rtl" align="right"><h1>תמונה מומלצת</h1>'+fixlinks(m[1].to_s)+'</div>'
 end
 
 # main
