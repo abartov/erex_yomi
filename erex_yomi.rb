@@ -17,7 +17,7 @@ require 'action_mailer'
 
 HTML_PROLOGUE = "<html lang=\"he\" dir=\"rtl\"><head><meta charset=\"UTF-8\" /><body dir=\"rtl\" align=\"right\">"
 HTML_EPILOGUE = "</body></html>"
-HEBMONTHS = [nil, 'בינואר', 'בפברואר', 'במארס', 'באפריל', 'במאי', 'ביוני', 'ביולי', 'באוגוסט', 'בספטמבר', 'באוקטובר', 'בנובמבר', 'בדצמבר']
+HEBMONTHS = [nil, 'בינואר', 'בפברואר', 'במרץ', 'באפריל', 'במאי', 'ביוני', 'ביולי', 'באוגוסט', 'בספטמבר', 'באוקטובר', 'בנובמבר', 'בדצמבר']
 
 ABOUT_TEXT = <<endtext
 <p>מתנדבי ויקיפדיה מתכבדים להגיש לך ערך מומלץ, תמונה מומלצת, ומקבץ אירועים מן הלוח הלועזי והעברי שאירעו בתאריך זה. אנו מזמינים אותך <a href="https://he.wikipedia.org/wiki/%D7%95%D7%99%D7%A7%D7%99%D7%A4%D7%93%D7%99%D7%94:%D7%91%D7%A8%D7%95%D7%9B%D7%99%D7%9D_%D7%94%D7%91%D7%90%D7%99%D7%9D">להצטרף אלינו</a>! ולסייע בויקיפדיה על-ידי כתיבה, הגהה, מיון לקטגוריות, שיוך תמונות לערכים, יצירת איורים, ועוד.</p><br/>
@@ -57,7 +57,8 @@ def prepare_article_part(mw)
     m = /(<p>.*<\/p>).*<div id=\"toc\" class=\"toc\">/m.match(h)
   end
   if m.nil?
-    die "ERROR finding intro part!  Aborting..."
+    puts "ERROR finding intro part!  Aborting..."
+    exit
   end
   return '<div dir="rtl" align="right"><h1>ערך מומלץ: '+'<a href="'+article_link+'">'+article_title+'</a></h1>'+fixlinks(m[1])+'</div>'
 end
@@ -80,6 +81,10 @@ end
 def prepare_daily_picture(mw)
   h = mw.render('תבנית:תמונה מומלצת '+heb_date)
   m = /<\/table>\s*(<p>.*<\/p>)/m.match h
+  if m.nil?
+    puts "ERROR finding picture part!  Aborting..."
+    return ''
+  end
   return '<div dir="rtl" align="right"><h1>תמונה מומלצת</h1>'+fixlinks(m[1].to_s)+'</div>'
 end
 
