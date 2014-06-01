@@ -1,6 +1,6 @@
 #!ruby 
 #
-# Erex Yomi e-mails a featured article to a mailing list
+# Erex Yomi e-mails a featured article, picture, and Today in History from the Hebrew Wikipedia to subscribers, via a mailing list
 # 
 # Author: Asaf Bartov
 # Source: https://github.com/abartov/erex_yomi
@@ -10,6 +10,7 @@
 # you will need to install the 'mediawiki-gateway' and 'actionmailer' gems.
 
 require "rubygems"
+require 'bundler/setup'
 require 'date'
 require 'uri'
 require 'media_wiki'
@@ -108,8 +109,9 @@ Mailer.sendmail_settings = {:arguments => "-i" }
 Mailer.logger = Logger.new(STDOUT)
 themail = Mailer.daily_email(body)
 themail.deliver
+#puts "TEMPORARILY NOT SENDING" #themail.deliver
 puts "done!"
-File.open('erex_yomi/last_sent.html', 'w') {|f| f.write(body)}
+File.open('last_sent.html', 'w') {|f| f.write(body)}
 
 puts "Bye!"
 
