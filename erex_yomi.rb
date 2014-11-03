@@ -119,8 +119,8 @@ Mailer.delivery_method = :sendmail
 Mailer.sendmail_settings = {:arguments => "-i" }
 Mailer.logger = Logger.new(STDOUT)
 themail = Mailer.daily_email(body)
-#themail.deliver
-puts "TEMPORARILY NOT SENDING" #themail.deliver
+themail.deliver
+#puts "TEMPORARILY NOT SENDING" #themail.deliver
 puts "done!"
 File.open('last_sent.html', 'w') {|f| f.write(body)}
 
