@@ -78,7 +78,16 @@ def heb_date(with_year = true)
   d = Date.today
   return "#{d.day} #{HEBMONTHS[d.month]}" + (with_year ? " #{d.year}" : '')
 end
-
+def prepare_daily_quotation(mw)
+  h = mw.render('תבנית:ציטוט יומי '+heb_date)
+  m = /<table cellpadding=\"2\" class=\"hebrewQuotation\".*/m.match(h) # skip all the calendar nav stuff, ridiculously hard-coded
+  #debugger
+  if m.nil?
+    puts "ERROR finding quotation part! Aborting..."
+    return ''
+  end
+  return '<div dir="rtl" align="right"><h1>ציטוט יומי</h1>'+fixlinks(m.to_s)+'</div>'
+end
 def prepare_daily_picture(mw)
   h = mw.render('תבנית:תמונה מומלצת '+heb_date)
   m = /<\/table>\s*(<p>.*<\/p>)/m.match h
@@ -95,6 +104,8 @@ mw = MediaWiki::Gateway.new('http://he.wikipedia.org/w/api.php')
 body = HTML_PROLOGUE + ABOUT_TEXT
 print "Preparing featured article... "
 body += prepare_article_part(mw)
+print "done!\nPreparing Daily Quotation... "
+body += prepare_daily_quotation(mw)
 print "done!\nPreparing Today in History... "
 body += prepare_today_in_history(mw)
 print "done!\nPreparing Today in Hebrew Calendar... "
@@ -108,8 +119,8 @@ Mailer.delivery_method = :sendmail
 Mailer.sendmail_settings = {:arguments => "-i" }
 Mailer.logger = Logger.new(STDOUT)
 themail = Mailer.daily_email(body)
-themail.deliver
-#puts "TEMPORARILY NOT SENDING" #themail.deliver
+#themail.deliver
+puts "TEMPORARILY NOT SENDING" #themail.deliver
 puts "done!"
 File.open('last_sent.html', 'w') {|f| f.write(body)}
 
