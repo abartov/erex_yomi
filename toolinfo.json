@@ -1,0 +1,9 @@
+{
+    "name" : "erex-yomi",
+    "title" : "Erex Yomi",
+    "description" : "sends daily e-mail with featured content from Hebrew Wikipedia",
+    "url" : "https://lists.wikimedia.org/mailman/listinfo/daily-article-he",
+    "keywords" : "email, daily, mailing list, featured articles, today in history",
+    "author" : "Asaf Bartov",
+    "repository" : "https://github.com/abartov/erex_yomi"
+}
