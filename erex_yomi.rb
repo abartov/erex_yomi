@@ -39,7 +39,7 @@ class Mailer < ActionMailer::Base
 end
 
 def fixlinks(str)
-  return str.gsub('href="/','href="http://he.wikipedia.org/').gsub('//upload.wiki','http://upload.wiki')
+  return str.gsub('href="/','href="https://he.wikipedia.org/').gsub('//upload.wiki','https://upload.wiki')
 end
 
 def prepare_article_part(mw)
@@ -100,7 +100,7 @@ end
 
 # main
 puts "Hi!"
-mw = MediaWiki::Gateway.new('http://he.wikipedia.org/w/api.php')
+mw = MediaWiki::Gateway.new('https://he.wikipedia.org/w/api.php')
 body = HTML_PROLOGUE + ABOUT_TEXT
 print "Preparing featured article... "
 body += prepare_article_part(mw)
