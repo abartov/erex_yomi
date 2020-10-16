@@ -1,4 +1,4 @@
 source 'https://rubygems.org'
 
-gem 'mediawiki-gateway'
+gem 'mediawiki_api'
 gem 'actionmailer'

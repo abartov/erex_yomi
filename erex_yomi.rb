@@ -13,7 +13,7 @@ require "rubygems"
 require 'bundler/setup'
 require 'date'
 require 'uri'
-require 'media_wiki'
+require 'mediawiki_api'
 require 'action_mailer'
 
 HTML_PROLOGUE = "<html lang=\"he\" dir=\"rtl\"><head><meta charset=\"UTF-8\" /><body dir=\"rtl\" align=\"right\">"
@@ -28,7 +28,7 @@ ABOUT_FOOTER = <<endtext
 <hr/><p>עמותת <a href="http://wikimedia.org.il/"><b>ויקימדיה ישראל</b></a> היא עמותה (מס' עמותה 580476430) הפועלת בשיתוף פעולה עם קרן ויקימדיה הבינלאומית לקידום הידע וההשכלה בישראל באמצעות איסופם, יצירתם והפצתם של תכנים חופשיים ובאמצעות ייזום פרויקטים להקלת הגישה למאגרי ידע.</p>
 endtext
 
-REXML::Document.entity_expansion_text_limit = 200000
+#REXML::Document.entity_expansion_text_limit = 200000
 
 class Mailer < ActionMailer::Base
   def daily_email(body)
@@ -42,20 +42,26 @@ def fixlinks(str)
   return str.gsub('href="/','href="https://he.wikipedia.org/').gsub('//upload.wiki','https://upload.wiki')
 end
 
+def mw_render(mw, page)
+  r = mw.action :parse, page: page, prop: 'text', token_type: false, formatversion: 2
+  return r.data['text']
+end
+
 def prepare_article_part(mw)
 # this one is useful if a single fixed-name template renders the daily recommended article correctly.  This doesn't seem to work well with the API; for some reason, I'm getting the same recommended article every time.
-  h = mw.render('תבנית:ערך מומלץ '+heb_date)
+
+  h = mw_render(mw, 'תבנית:ערך מומלץ '+heb_date)
   m = /לערך המלא/.match h
   s = m.pre_match[m.pre_match.rindex('href="/wiki/')+12..-1]
   raw_name = s[0..s.index('"')-1]
   article_link = "https://he.wikipedia.org/wiki/#{raw_name}"
   article_title = URI.unescape(raw_name).gsub('_', ' ')
   print "- Title: #{article_title} - "
-  h = mw.render(article_title)
+  h = mw_render(mw, article_title)
   # grab everything before the TOC
   m = /(<p>.*<\/p>).*<table id=\"toc\" class=\"toc\">/m.match(h)
   if m.nil?
-    m = /(<p>.*<\/p>).*<div id=\"toc\" class=\"toc\">/m.match(h)
+    m = /(<p>.*<\/p>).*<div id=\"toc\" class=\"toc\".*?>/m.match(h)
   end
   if m.nil?
     puts "ERROR finding intro part!  Aborting..."
@@ -65,12 +71,12 @@ def prepare_article_part(mw)
 end
 
 def prepare_today_in_history(mw)
-  h = mw.render('תבנית:היום בהיסטוריה '+heb_date(false))
+  h = mw_render(mw, 'תבנית:היום בהיסטוריה '+heb_date(false))
   m = /<ul>.*<\/ul>/m.match(h)
   return '<div dir="rtl" align="right"><h1>היום בהיסטוריה</h1>'+fixlinks(m.to_s)+'</div>'
 end
 def prepare_today_in_hebcal(mw)
-  h = mw.render('תבנית:אירועים בלוח העברי')
+  h = mw_render(mw, 'תבנית:אירועים בלוח העברי')
   m = /<ul>.*<\/ul>/m.match(h)
   return '<div dir="rtl" align="right"><h1>אירועים בלוח העברי</h1>'+fixlinks(m.to_s)+'</div>'
 end
@@ -79,8 +85,8 @@ def heb_date(with_year = true)
   return "#{d.day} #{HEBMONTHS[d.month]}" + (with_year ? " #{d.year}" : '')
 end
 def prepare_daily_quotation(mw)
-  h = mw.render('תבנית:ציטוט יומי '+heb_date)
-  m = /<table cellpadding=\"2\" class=\"hebrewQuotation\".*/m.match(h) # skip all the calendar nav stuff, ridiculously hard-coded
+  h = mw_render(mw, 'תבנית:ציטוט יומי '+heb_date)
+  m = /<div class=\"hebrewQuotation.*/m.match(h) # skip all the calendar nav stuff, ridiculously hard-coded
   #debugger
   if m.nil?
     puts "ERROR finding quotation part! Aborting..."
@@ -89,7 +95,7 @@ def prepare_daily_quotation(mw)
   return '<div dir="rtl" align="right"><h1>ציטוט יומי</h1>'+fixlinks(m.to_s)+'</div>'
 end
 def prepare_daily_picture(mw)
-  h = mw.render('תבנית:תמונה מומלצת '+heb_date)
+  h = mw_render(mw, 'תבנית:תמונה מומלצת '+heb_date)
   m = /<\/table>\s*(<p>.*<\/p>)/m.match h
   if m.nil?
     puts "ERROR finding picture part!  Aborting..."
@@ -100,7 +106,7 @@ end
 
 # main
 puts "Hi!"
-mw = MediaWiki::Gateway.new('https://he.wikipedia.org/w/api.php')
+mw = MediawikiApi::Client.new('https://he.wikipedia.org/w/api.php')
 body = HTML_PROLOGUE + ABOUT_TEXT
 print "Preparing featured article... "
 body += prepare_article_part(mw)
@@ -115,11 +121,15 @@ body += prepare_daily_picture(mw)
 body += ABOUT_FOOTER + HTML_EPILOGUE
 print "done!\nSending... "
 
-Mailer.delivery_method = :sendmail
-Mailer.sendmail_settings = {:arguments => "-i" }
-Mailer.logger = Logger.new(STDOUT)
-themail = Mailer.daily_email(body)
-themail.deliver
+unless ENV['EREX_DEBUG'] == '1'
+  Mailer.delivery_method = :sendmail
+  Mailer.sendmail_settings = {:arguments => "-i" }
+  Mailer.logger = Logger.new(STDOUT)
+  themail = Mailer.daily_email(body)
+  themail.deliver
+else
+  puts "DEBUG mode! E-mail skipped but written to last_sent.html."
+end
 #puts "TEMPORARILY NOT SENDING" #themail.deliver
 puts "done!"
 File.open('last_sent.html', 'w') {|f| f.write(body)}
