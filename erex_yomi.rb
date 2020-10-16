@@ -33,7 +33,7 @@ endtext
 class Mailer < ActionMailer::Base
   def daily_email(body)
     mail( :to => "daily-article-he@lists.wikimedia.org", :from => "dailyarticle@wikimedia.org.il", :subject => " תוכן מומלץ יומי מויקיפדיה - "+heb_date) do |format|
-      format.html { render text: body }
+      format.html { render inline: body }
     end
   end
 end
