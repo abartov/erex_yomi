@@ -59,7 +59,7 @@ def prepare_article_part(mw)
   print "- Title: #{article_title} - "
   h = mw_render(mw, article_title)
   # grab everything before the TOC
-  m = /(<p>.*<\/p>).*<span class=\"mw-headline\"/m.match(h)
+  m = /(<p>.*<\/p>).*<meta property=\"mw:PageProp\/toc\"/m.match(h)
   #if m.nil?
   #  m = /(<p>.*<\/p>).*<div id=\"toc\" class=\"toc\".*?>/m.match(h)
   #end
