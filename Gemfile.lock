@@ -74,7 +74,7 @@ GEM
     rails-html-sanitizer (1.4.4)
       loofah (~> 2.19, >= 2.19.1)
     thread_safe (0.3.6)
-    tzinfo (1.2.7)
+    tzinfo (1.2.10)
       thread_safe (~> 0.1)
     unf (0.1.4)
       unf_ext
