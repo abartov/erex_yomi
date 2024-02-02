@@ -5,9 +5,17 @@ Generate and e-mail a daily selection of the Hebrew Wikipedia to a(n external) l
 
 The template names are all hard-coded out of sheer laziness, but it should be trivial to adapt to other Mediawiki-based sites, and you're very welcome to do so.
 
-It is designed to be run via cron(1).  Here's a sample crontab line:
+It is designed to be run via toolforge jobs.  Here's a sample way to run it:
 
-   0 19 */2 * * /home/abartov/.rvm/rubies/ruby-2.0.0-p247/bin/ruby /home/abartov/erex_yomi/erex_yomi.rb
+
+    # build it
+    toolforge build start https://github.com/abartov/erex_yomi
+    # schedule the cron
+    toolforge jobs run \
+            --schedule '0 19 */2 * *' \
+            --command run-cron \
+            --image tool-erex-yomi/tool-erex-yomi:latest \
+            --filelog
 
 Author
 ======
