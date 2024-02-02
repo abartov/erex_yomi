@@ -1,4 +1,4 @@
-#!ruby 
+#!/usr/bin/env ruby
 #
 # Erex Yomi e-mails a featured article, picture, and Today in History from the Hebrew Wikipedia to subscribers, via a mailing list
 # 
