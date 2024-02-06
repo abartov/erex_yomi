@@ -11,12 +11,12 @@ It is designed to be run via toolforge jobs.  Here's a sample way to run it:
     # build it
     toolforge build start https://github.com/abartov/erex_yomi
     # schedule the cron
-    toolforge jobs run \
-            --schedule '0 19 */2 * *' \
-            --command run-cron \
-            --image tool-erex-yomi/tool-erex-yomi:latest \
-            --filelog
-
+    toolforge job run \
+        --mount=all \
+        --schedule '0 19 */2 * *' \
+        --command run-cron \
+        --image tool-erex-yomi/tool-erex-yomi:latest \
+        erex_yomi
 Author
 ======
 
