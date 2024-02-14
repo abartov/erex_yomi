@@ -57,9 +57,11 @@ def prepare_article_part(mw)
   article_link = "https://he.wikipedia.org/wiki/#{raw_name}"
   article_title = URI.decode_www_form(raw_name)[0][0].gsub('_', ' ')
   print "- Title: #{article_title} - "
-  h = mw_render(mw, article_title)
+  
+  #h = mw_render(mw, article_title)
   # grab everything before the TOC
-  m = /(<p>.*<\/p>).*<meta property=\"mw:PageProp\/toc\"/m.match(h)
+  m = /(<div class=\"mw-content-rtl.*<\/div>)\n<!-- \nNewPP/m.match(h)
+  #m = /(<p>.*<\/p>).*<meta property=\"mw:PageProp\/toc\"/m.match(h)
   #if m.nil?
   #  m = /(<p>.*<\/p>).*<div id=\"toc\" class=\"toc\".*?>/m.match(h)
   #end
