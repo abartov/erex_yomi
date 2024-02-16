@@ -124,7 +124,7 @@ body += ABOUT_FOOTER + HTML_EPILOGUE
 print "done!\nSending... "
 
 unless ENV['EREX_DEBUG'] == '1'
-  Mailer.delivery_method = :sendmail
+  Mailer.delivery_method = :smtp
   Mailer.sendmail_settings = {:arguments => "-i" }
   Mailer.logger = Logger.new(STDOUT)
   themail = Mailer.daily_email(body)
