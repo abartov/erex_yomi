@@ -32,7 +32,8 @@ endtext
 
 class Mailer < ActionMailer::Base
   def daily_email(body)
-    mail( :to => "daily-article-he@lists.wikimedia.org", :from => "dailyarticle@wikimedia.org.il", :subject => " תוכן מומלץ יומי מויקיפדיה - "+heb_date) do |format|
+    # we have to send from @toolforge.org domain
+    mail( :to => "daily-article-he@lists.wikimedia.org", :from => "dailyarticle@toolforge.org", :subject => " תוכן מומלץ יומי מויקיפדיה - "+heb_date) do |format|
       format.html { render inline: body }
     end
   end
@@ -124,9 +125,11 @@ body += ABOUT_FOOTER + HTML_EPILOGUE
 print "done!\nSending... "
 
 unless ENV['EREX_DEBUG'] == '1'
-  Mailer.delivery_method = :sendmail
-  #Mailer.delivery_method = :smtp
-  Mailer.sendmail_settings = {:arguments => "-i" }
+  Mailer.delivery_method = :smtp
+  Mailer.smtp_settings = {
+    :address => "mail.tools.wmcloud.org" ,
+    :openssl_verify_mode => "none",
+  }
   #Mailer.smtp_settings = { enable_starttls_auto: false, openssl_verify_mode: 'none'}
 
   Mailer.logger = Logger.new(STDOUT)
