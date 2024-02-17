@@ -55,7 +55,8 @@ REXML::Document.entity_expansion_text_limit = 200000
 
 class Mailer < ActionMailer::Base
   def daily_email(body)
-    mail( :to => "daily-article-he@lists.wikimedia.org", :from => "dailyarticle@wikimedia.org.il", :subject => " תוכן מומלץ יומי מויקיפדיה - "+heb_date) do |format|
+    # we have to send from @toolforge.org domain
+    mail( :to => "daily-article-he@lists.wikimedia.org", :from => "dailyarticle@toolforge.org", :subject => " תוכן מומלץ יומי מויקיפדיה - "+heb_date) do |format|
       format.html { render text: body }
     end
   end
@@ -128,7 +129,13 @@ body += ABOUT_FOOTER + HTML_EPILOGUE
 print "done!\nSending... "
 
 Mailer.delivery_method = :sendmail
-Mailer.sendmail_settings = {:arguments => "-i" }
+Mailer.sendmail_settings = {
+  Mailer.delivery_method = :smtp
+  Mailer.smtp_settings = {
+    :address => "mail.tools.wmcloud.org" ,
+    :openssl_verify_mode => "none",
+  }
+}
 Mailer.logger = Logger.new(STDOUT)
 themail = Mailer.daily_email(body)
 themail.deliver
