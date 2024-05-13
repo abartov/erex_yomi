@@ -58,14 +58,14 @@ GEM
       faraday-cookie_jar (~> 0.0, >= 0.0.6)
       faraday_middleware (~> 0.10, >= 0.10.0)
     mini_mime (1.0.2)
-    mini_portile2 (2.8.5)
+    mini_portile2 (2.8.6)
     minitest (5.20.0)
     multipart-post (2.1.1)
     net-protocol (0.2.2)
       timeout
     net-smtp (0.4.0)
       net-protocol
-    nokogiri (1.16.2)
+    nokogiri (1.16.5)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     racc (1.7.3)
